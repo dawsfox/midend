@@ -1,0 +1,20 @@
+tmp0 = 3*a
+tmp1 = 4/2
+x = tmp0+tmp1
+z = 3*f
+tmp2 = 2**2
+x = 4/tmp2
+d = 4
+If(d){
+	d = 5
+	e = d
+} else {
+	e = 0
+}
+e = d
+tmp3 = 1*2
+b = 3+tmp3
+tmp4 = 3*2
+tmp5 = tmp4+1
+y = tmp5-3
+a = 18+y

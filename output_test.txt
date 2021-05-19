@@ -1,0 +1,17 @@
+tmp0 = 3*2
+tmp1 = 4/2
+x = tmp0+tmp1
+tmp2 = 2**2
+x = 4/tmp2
+d = 4
+If(d){
+	d = 5
+	e = d
+} else {
+	e = 0
+}
+e = d
+tmp3 = 3*2
+tmp4 = tmp3+1
+y = tmp4-3
+a = 18+y

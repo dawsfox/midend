@@ -1,0 +1,27 @@
+main(){
+	int tmp0, tmp1, x, tmp2, d, e, tmp3, tmp4, y, a;
+
+	S0:	tmp0 = 3*2
+	S1:	tmp1 = 4/2
+	S2:	tmp2 = 2**2
+	S3:	d = 4
+	S4:	x = tmp0+tmp1
+	S5:	x = 4/tmp2
+	S6:	If(d){
+	S7:		d = 5
+	S8:		e = d
+	S9:	} else {
+	S10:		e = 0
+	S11:	}
+	S12:	tmp3 = 3*2
+	S13:	e = d
+	S14:	tmp4 = tmp3+1
+	S15:	y = tmp4-3
+	S16:	a = 18+y
+
+	println("x=%d\n");
+	println("d=%d\n");
+	println("e=%d\n");
+	println("y=%d\n");
+	println("a=%d\n");
+}

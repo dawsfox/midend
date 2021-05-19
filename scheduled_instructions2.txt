@@ -1,0 +1,39 @@
+main(){
+	int a, tmp0, tmp1, x, f, z, tmp2, d, e, tmp3, b, tmp4, tmp5, y;
+
+	printf("a=");
+	scanf("%d",&a);
+
+	printf("f=");
+	scanf("%d",&f);
+
+	S0:	tmp0 = 3*a
+	S1:	tmp1 = 4/2
+	S2:	tmp2 = 2**2
+	S3:	z = 3*f
+	S4:	d = 4
+	S5:	x = tmp0+tmp1
+	S6:	x = 4/tmp2
+	S7:	If(d){
+	S8:		d = 5
+	S9:		e = d
+	S10:	} else {
+	S11:		e = 0
+	S12:	}
+	S13:	tmp4 = 3*2
+	S14:	tmp3 = 1*2
+	S15:	e = d
+	S16:	tmp5 = tmp4+1
+	S17:	b = 3+tmp3
+	S18:	y = tmp5-3
+	S19:	a = 18+y
+
+	println("a=%d\n");
+	println("x=%d\n");
+	println("f=%d\n");
+	println("z=%d\n");
+	println("d=%d\n");
+	println("e=%d\n");
+	println("b=%d\n");
+	println("y=%d\n");
+}
