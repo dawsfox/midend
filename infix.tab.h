@@ -54,7 +54,7 @@
 
 #if ! defined YYSTYPE && ! defined YYSTYPE_IS_DECLARED
 typedef union YYSTYPE
-#line 57 "infix.y"
+#line 58 "infix.y"
 {
 int d;
 char text[36];

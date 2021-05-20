@@ -167,11 +167,47 @@ int dependency_check(char *var, char **statement, int write) {
 	return 0;
 }
 
-/*
-int node_weight(ddg_node_t *node) {
-	return node->weight;
+// RAW
+int flow_check(char **src_statement, char **dest_statement) {
+    // only check dest of src_statement since looking for flow dependency
+    if (src_statement[0] != NULL) {
+        if (dest_statement[1] != NULL && strcmp(src_statement[0], dest_statement[1]) == 0) {
+            return(1);
+        }
+        if (dest_statement[2] != NULL && strcmp(src_statement[0], dest_statement[2]) == 0) {
+            return(1);
+        }
+    }
+    return(0);
 }
-*/
+
+// WAR
+int anti_check(char **src_statement, char **dest_statement) {
+    // anti dependency check, so check reads (src) of src_statement
+    // against dest (write) of dest_statement
+    if (src_statement[1] != NULL) {
+        if (dest_statement[0] != NULL && strcmp(src_statement[1], dest_statement[0]) == 0) {
+            return(1);
+        }
+    }
+    if (src_statement[2] != NULL) {
+        if (dest_statement[0] != NULL && strcmp(src_statement[2], dest_statement[0]) == 0) {
+            return(1);
+        }
+    }
+    return(0);
+}
+
+// WAW
+int output_check(char **src_statement, char **dest_statement) {
+    // output dependency check, so only check writes (dest) of each statement
+    if (src_statement[0] != NULL) {
+        if (dest_statement[0] != NULL && strcmp(src_statement[0], dest_statement[0]) == 0) {
+            return(1);
+        }
+    }
+    return(0);
+}
 
 int get_latency(char *line) {
 	unsigned length = strlen(line);
@@ -277,6 +313,31 @@ int main(int argc, char *argv[]) {
 		}
 		i++;
 	}
+
+    printf("Printing dependencies (forward) \n");
+    for (int j=0; j<i; j++) {
+        printf("S%d:\tflow deps - ", j);
+        for (int k=j+1; k<i; k++) {
+            if (flow_check(statement_list[j], statement_list[k]) == 1) {
+                printf("S%d ", k);
+            }
+        }
+        printf("\n");
+        printf("\tanti deps - ");
+        for (int k=j+1; k<i; k++) {
+            if (anti_check(statement_list[j], statement_list[k]) == 1) {
+                printf("S%d ", k);
+            }
+        }
+        printf("\n");
+        printf("\toutput deps - ");
+        for (int k=j+1; k<i; k++) {
+            if (output_check(statement_list[j], statement_list[k]) == 1) {
+                printf("S%d ", k);
+            }
+        }
+        printf("\n");
+    }
 	
 	/* building ddgs */
 	ddg_t blocks[8];
@@ -426,6 +487,8 @@ int main(int argc, char *argv[]) {
 			}
 		}
 	}
+
+    /*
 
 	fprintf(output, "main(){\n");
 	fprintf(output, "\tint ");
@@ -660,6 +723,7 @@ int main(int argc, char *argv[]) {
 			}
 		}
 	}
+    */
 
 	fprintf(output, "\n");
 	for (int j=0; j<var_index; j++) {

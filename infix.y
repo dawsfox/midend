@@ -23,6 +23,7 @@ int tertiary_mark = 0;
 FILE *yyin;
 FILE *output;
 
+int yylex();
 
 int checkSym(char **list, char *sym) {
         for (int i=0; i<latest; i++) {
