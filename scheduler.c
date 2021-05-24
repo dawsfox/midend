@@ -14,6 +14,11 @@ typedef struct edge_s {
 	int dest;
 } edge_t;
 
+typedef struct bb_s {
+    int statements[32];
+    int size;
+} bb_t;
+
 typedef struct ddg_s {
 	int start;
 	int end;
@@ -338,8 +343,104 @@ int main(int argc, char *argv[]) {
         }
         printf("\n");
     }
-	
-	/* building ddgs */
+
+    // idea: build each basic block with the statements included
+    // the basic block including the if statement will include all 
+    // the statements. When printing to the file, for each statement check
+    // its not in a different basic block. If it is, print the goto statement.
+    // If its not, print normal. In other words, basic blocks in the array have
+    // priority for the farther in the array they are, since "inner" basic
+    // blocks are later than "outer" basic blocks
+    bb_t block_array[32];
+    for (int j=0; j<32; j++) {
+        block_array[j].size = 0;
+        for (int k=0; k<32; k++) {
+            block_array[j].statements[k] = -1;
+        }
+    }
+    unsigned block_index = 0;
+    unsigned secondary_index = 0;
+    unsigned secondary_flag = 0;
+    unsigned if_start_flag = 0;
+    unsigned else_flag = 0;
+    unsigned if_end_flag = 0;
+    char *dest_ptr;
+    char *src1_ptr;
+    char *src2_ptr;
+    for (int j=0; j<i; j++) {
+        dest_ptr = statement_list[j][0];
+        src1_ptr = statement_list[j][1];
+        src2_ptr = statement_list[j][2];
+        if (if_start_flag) {
+            if_start_flag = 0;
+            block_array[block_index].statements[block_array[block_index].size] = -2;
+            block_array[block_index].size++;
+            secondary_index = block_index + 1;
+            secondary_flag = 1;
+        }
+        else if (else_flag) {
+            else_flag = 0;
+            block_array[block_index].statements[block_array[block_index].size] = -3;
+            block_array[block_index].size++;
+            secondary_index++;
+            secondary_flag = 1;
+        }
+        else if (if_end_flag) {
+            if_end_flag = 0;
+            secondary_flag = 0;
+            block_index = secondary_index + 1;
+        }
+        // if statement is beginning of if statement
+        if (dest_ptr == NULL && src1_ptr != NULL && src2_ptr == NULL) {
+            if_start_flag = 1;
+        }
+        // if else or end of else
+        if (dest_ptr != NULL && src1_ptr == NULL && src2_ptr == NULL) {
+            // if else
+            if (strcmp(dest_ptr, "else") == 0) {
+                else_flag = 1;
+                secondary_flag = 0;
+                block_array[secondary_index].statements[block_array[secondary_index].size] = -3;
+                block_array[secondary_index].size++;
+            }
+            // if end of else
+            else if (strcmp(dest_ptr, "end") == 0) {
+                if_end_flag = 1;
+                secondary_flag = 0;
+                block_array[secondary_index].statements[block_array[secondary_index].size] = -2;
+                block_array[secondary_index].size++;
+            }
+        }
+        // if just outer basic block
+        if (!secondary_flag) {
+            block_array[block_index].statements[block_array[block_index].size] = j;
+            block_array[block_index].size++;
+        }
+        // if giving to other basic block
+        else {
+            block_array[secondary_index].statements[block_array[secondary_index].size] = j;
+            block_array[secondary_index].size++;
+        }
+    }
+
+    for (int j=0; j<32; j++) {
+        if (block_array[j].size > 0) {
+            printf("BB%d:\n", j);
+            for (int k=0; k<block_array[j].size; k++) {
+                if (block_array[j].statements[k] >= 0) {
+                    printf("\t%s", whole_statement[block_array[j].statements[k]]);
+                }
+                else if (block_array[j].statements[k] == -2) {
+                    printf("\t\tgoto BB%d\n", j+1);
+                }
+                else if (block_array[j].statements[k] == -3) {
+                    printf("\t\tgoto BB%d\n", j+2);
+                }
+            }
+        }
+    }
+
+    /*
 	ddg_t blocks[8];
 	unsigned block_index = 0;;
 	blocks[0].start = 0;
@@ -487,6 +588,8 @@ int main(int argc, char *argv[]) {
 			}
 		}
 	}
+
+    */ 
 
     /*
 
@@ -723,7 +826,6 @@ int main(int argc, char *argv[]) {
 			}
 		}
 	}
-    */
 
 	fprintf(output, "\n");
 	for (int j=0; j<var_index; j++) {
@@ -732,6 +834,7 @@ int main(int argc, char *argv[]) {
 		}
 	}
 	fprintf(output, "}");
+    */
 	
 	
 	
